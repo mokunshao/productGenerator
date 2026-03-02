@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Form, Input, InputNumber, Button, message, Typography, Space } from 'antd';
-import Quill from 'quill';
-import 'quill/dist/quill.snow.css';
+import { useState } from 'react';
+import { Form, Input, InputNumber, Button, message, Typography } from 'antd';
 import './App.css';
 
 const { Text } = Typography;
@@ -99,7 +97,7 @@ function App() {
   return (
     <div className="app">
       <h1>商品信息生成器</h1>
-      
+
       <div className="container">
         <Form
           form={form}
@@ -154,8 +152,8 @@ function App() {
           </div>
 
           <div className="form-row">
-            <Form.Item 
-              label="H(高)" 
+            <Form.Item
+              label="H(高)"
               name="height"
               rules={[
                 {
@@ -174,8 +172,8 @@ function App() {
               <InputNumber min={0} />
             </Form.Item>
 
-            <Form.Item 
-              label="D(深)" 
+            <Form.Item
+              label="D(深)"
               name="depth"
               rules={[
                 {
@@ -196,8 +194,8 @@ function App() {
           </div>
 
           <div className="form-row">
-            <Form.Item 
-              label="W(宽)" 
+            <Form.Item
+              label="W(宽)"
               name="width"
               rules={[
                 {
@@ -246,7 +244,7 @@ function App() {
                   复制标题
                 </Button>
               </div>
-              
+
               <div className="content-section">
                 <h3>详情</h3>
                 <div className="html-content" dangerouslySetInnerHTML={{ __html: generatedContent }} />
