@@ -57,20 +57,20 @@ function App() {
   // 组装详情内容
   const generateContent = (values: FormValues) => {
     let content = '';
-    content += `<strong>Studio:</strong> ${values.studioName || '--'}\n`;
-    content += `<strong>Product Name:</strong> ${values.productName || '--'}\n`;
-    content += `<strong>Est. Completion:</strong> ${values.estimatedTime || '--'}\n`;
+    content += `<strong>Studio:</strong> ${values.studioName || '--'}<br>`;
+    content += `<strong>Product Name:</strong> ${values.productName || '--'}<br>`;
+    content += `<strong>Est. Completion:</strong> ${values.estimatedTime || '--'}<br>`;
     // 检查H、D、W是否都有值
     if (values.height !== undefined && values.height !== null && values.depth !== undefined && values.depth !== null && values.width !== undefined && values.width !== null) {
-      content += `<strong>Size:</strong> (H) ${values.height}cm x (D) ${values.depth}cm x (W) ${values.width}cm\n`;
+      content += `<strong>Size:</strong> (H) ${values.height}cm x (D) ${values.depth}cm x (W) ${values.width}cm<br>`;
     } else {
-      content += `<strong>Size:</strong> --\n`;
+      content += `<strong>Size:</strong> --<br>`;
     }
-    content += `<strong>Limited No Of Unit:</strong> ${values.limitedCount || '--'}\n`;
-    content += `<strong>Product IP:</strong> ${values.ipName || '--'}\n`;
-    content += `<strong>Product Role:</strong> ${values.roleName || '--'}\n`;
-    content += `<strong>Product Scale:</strong> ${values.scale ? `1/${values.scale}` : '--'}\n`;
-    content += `<strong>Product Material:</strong> Imported resin and PU\n`;
+    content += `<strong>Limited No Of Unit:</strong> ${values.limitedCount || '--'}<br>`;
+    content += `<strong>Product IP:</strong> ${values.ipName || '--'}<br>`;
+    content += `<strong>Product Role:</strong> ${values.roleName || '--'}<br>`;
+    content += `<strong>Product Scale:</strong> ${values.scale ? `1/${values.scale}` : '--'}<br>`;
+    content += `<strong>Product Material:</strong> Imported resin and PU<br>`;
     content += `<strong>Special Description:</strong> --`;
     return content;
   };
