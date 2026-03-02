@@ -1,5 +1,5 @@
 #root {
-  max-width: 1280px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
   font-family: 'Microsoft YaHei', Arial, sans-serif;
@@ -9,19 +9,37 @@
   text-align: left;
 }
 
-.form {
-  background: #f9f9f9;
-  padding: 2rem;
-  border-radius: 8px;
+.app h1 {
   margin-bottom: 2rem;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.form {
+  flex: 1;
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 300px;
 }
 
 .result {
+  flex: 1;
   background: #f9f9f9;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 300px;
+  position: sticky;
+  top: 2rem;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
 }
 
 .title-section {
@@ -66,12 +84,28 @@
   font-weight: 600;
 }
 
+.empty-result {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #999;
+  background: #ffffff;
+  border: 1px dashed #d9d9d9;
+  border-radius: 4px;
+}
+
 .ant-form-item {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+}
+
+.ant-form-item-label {
+  padding-bottom: 4px;
 }
 
 .ant-btn-primary {
   margin-top: 8px;
+  width: 100%;
 }
 
 @media (max-width: 768px) {
@@ -79,9 +113,14 @@
     padding: 1rem;
   }
   
+  .container {
+    flex-direction: column;
+  }
+  
   .form,
   .result {
     padding: 1.5rem;
+    position: static;
   }
   
   .title-section {

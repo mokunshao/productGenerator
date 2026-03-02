@@ -95,99 +95,107 @@ function App() {
     <div className="app">
       <h1>商品信息生成器</h1>
       
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSubmit}
-        className="form"
-      >
-        <Form.Item
-          label="工作室名称"
-          name="studioName"
-          rules={[{ required: true, message: '请输入工作室名称' }]}
+      <div className="container">
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          className="form"
         >
-          <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
-        </Form.Item>
+          <Form.Item
+            label="工作室名称"
+            name="studioName"
+            rules={[{ required: true, message: '请输入工作室名称' }]}
+          >
+            <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
+          </Form.Item>
 
-        <Form.Item
-          label="IP名称"
-          name="ipName"
-          rules={[{ required: true, message: '请输入IP名称' }]}
-        >
-          <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
-        </Form.Item>
+          <Form.Item
+            label="IP名称"
+            name="ipName"
+            rules={[{ required: true, message: '请输入IP名称' }]}
+          >
+            <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
+          </Form.Item>
 
-        <Form.Item
-          label="角色名称"
-          name="roleName"
-          rules={[{ required: true, message: '请输入角色名称' }]}
-        >
-          <Input onChange={(e) => e.target.value = handleRoleNameChange(e.target.value)} />
-        </Form.Item>
+          <Form.Item
+            label="角色名称"
+            name="roleName"
+            rules={[{ required: true, message: '请输入角色名称' }]}
+          >
+            <Input onChange={(e) => e.target.value = handleRoleNameChange(e.target.value)} />
+          </Form.Item>
 
-        <Form.Item
-          label="商品名称"
-          name="productName"
-          rules={[{ required: true, message: '请输入商品名称' }]}
-        >
-          <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
-        </Form.Item>
+          <Form.Item
+            label="商品名称"
+            name="productName"
+            rules={[{ required: true, message: '请输入商品名称' }]}
+          >
+            <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
+          </Form.Item>
 
-        <Form.Item label="一比几" name="scale">
-          <InputNumber min={1} />
-        </Form.Item>
+          <Form.Item label="一比几" name="scale">
+            <InputNumber min={1} />
+          </Form.Item>
 
-        <Form.Item label="H(高)" name="height">
-          <InputNumber min={0} />
-        </Form.Item>
+          <Form.Item label="H(高)" name="height">
+            <InputNumber min={0} />
+          </Form.Item>
 
-        <Form.Item label="D(深)" name="depth">
-          <InputNumber min={0} />
-        </Form.Item>
+          <Form.Item label="D(深)" name="depth">
+            <InputNumber min={0} />
+          </Form.Item>
 
-        <Form.Item label="W(宽)" name="width">
-          <InputNumber min={0} />
-        </Form.Item>
+          <Form.Item label="W(宽)" name="width">
+            <InputNumber min={0} />
+          </Form.Item>
 
-        <Form.Item label="限量数量" name="limitedCount">
-          <InputNumber min={1} />
-        </Form.Item>
+          <Form.Item label="限量数量" name="limitedCount">
+            <InputNumber min={1} />
+          </Form.Item>
 
-        <Form.Item
-          label="预期出货时间"
-          name="estimatedTime"
-          rules={[
-            {
-              pattern: /^\d{4} Q[1-4]$/,
-              message: '格式应为4位年份+Q+空格+1-4，例如：2026 Q3'
-            }
-          ]}
-        >
-          <Input placeholder="例如：2026 Q3" />
-        </Form.Item>
+          <Form.Item
+            label="预期出货时间"
+            name="estimatedTime"
+            rules={[
+              {
+                pattern: /^\d{4} Q[1-4]$/,
+                message: '格式应为4位年份+Q+空格+1-4，例如：2026 Q3'
+              }
+            ]}
+          >
+            <Input placeholder="例如：2026 Q3" />
+          </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            生成
-          </Button>
-        </Form.Item>
-      </Form>
-
-      {generatedTitle && (
-        <div className="result">
-          <div className="title-section">
-            <Text strong>{generatedTitle}</Text>
-            <Button type="link" onClick={copyToClipboard}>
-              复制标题
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              生成
             </Button>
-          </div>
-          
-          <div className="content-section">
-            <h3>详情</h3>
-            <div className="html-content" dangerouslySetInnerHTML={{ __html: generatedContent }} />
-          </div>
+          </Form.Item>
+        </Form>
+
+        <div className="result">
+          {generatedTitle ? (
+            <>
+              <div className="title-section">
+                <Text strong>{generatedTitle}</Text>
+                <Button type="link" onClick={copyToClipboard}>
+                  复制标题
+                </Button>
+              </div>
+              
+              <div className="content-section">
+                <h3>详情</h3>
+                <div className="html-content" dangerouslySetInnerHTML={{ __html: generatedContent }} />
+              </div>
+            </>
+          ) : (
+            <div className="empty-result">
+              <p>填写表单并点击生成按钮查看结果</p>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
