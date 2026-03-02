@@ -29,6 +29,21 @@
   min-width: 300px;
 }
 
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 12px;
+}
+
+.form-row .ant-form-item {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.form-row .ant-form-item:last-child {
+  margin-right: 0;
+}
+
 .result {
   flex: 1;
   background: #f9f9f9;

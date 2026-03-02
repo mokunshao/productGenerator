@@ -60,7 +60,12 @@ function App() {
     content += `<strong>Studio:</strong> ${values.studioName || '--'}\n`;
     content += `<strong>Product Name:</strong> ${values.productName || '--'}\n`;
     content += `<strong>Est. Completion:</strong> ${values.estimatedTime || '--'}\n`;
-    content += `<strong>Size:</strong> (H) ${values.height || '--'}cm x (D) ${values.depth || '--'}cm x (W) ${values.width || '--'}cm\n`;
+    // 检查H、D、W是否都有值
+    if (values.height !== undefined && values.height !== null && values.depth !== undefined && values.depth !== null && values.width !== undefined && values.width !== null) {
+      content += `<strong>Size:</strong> (H) ${values.height}cm x (D) ${values.depth}cm x (W) ${values.width}cm\n`;
+    } else {
+      content += `<strong>Size:</strong> --\n`;
+    }
     content += `<strong>Limited No Of Unit:</strong> ${values.limitedCount || '--'}\n`;
     content += `<strong>Product IP:</strong> ${values.ipName || '--'}\n`;
     content += `<strong>Product Role:</strong> ${values.roleName || '--'}\n`;
@@ -102,70 +107,128 @@ function App() {
           onFinish={handleSubmit}
           className="form"
         >
-          <Form.Item
-            label="工作室名称"
-            name="studioName"
-            rules={[{ required: true, message: '请输入工作室名称' }]}
-          >
-            <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
-          </Form.Item>
+          <div className="form-row">
+            <Form.Item
+              label="工作室名称"
+              name="studioName"
+              rules={[{ required: true, message: '请输入工作室名称' }]}
+            >
+              <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
+            </Form.Item>
 
-          <Form.Item
-            label="IP名称"
-            name="ipName"
-            rules={[{ required: true, message: '请输入IP名称' }]}
-          >
-            <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
-          </Form.Item>
+            <Form.Item
+              label="IP名称"
+              name="ipName"
+              rules={[{ required: true, message: '请输入IP名称' }]}
+            >
+              <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
+            </Form.Item>
+          </div>
 
-          <Form.Item
-            label="角色名称"
-            name="roleName"
-            rules={[{ required: true, message: '请输入角色名称' }]}
-          >
-            <Input onChange={(e) => e.target.value = handleRoleNameChange(e.target.value)} />
-          </Form.Item>
+          <div className="form-row">
+            <Form.Item
+              label="角色名称"
+              name="roleName"
+              rules={[{ required: true, message: '请输入角色名称' }]}
+            >
+              <Input onChange={(e) => e.target.value = handleRoleNameChange(e.target.value)} />
+            </Form.Item>
 
-          <Form.Item
-            label="商品名称"
-            name="productName"
-            rules={[{ required: true, message: '请输入商品名称' }]}
-          >
-            <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
-          </Form.Item>
+            <Form.Item
+              label="商品名称"
+              name="productName"
+              rules={[{ required: true, message: '请输入商品名称' }]}
+            >
+              <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
+            </Form.Item>
+          </div>
 
-          <Form.Item label="一比几" name="scale">
-            <InputNumber min={1} />
-          </Form.Item>
+          <div className="form-row">
+            <Form.Item label="一比几" name="scale">
+              <InputNumber min={1} />
+            </Form.Item>
 
-          <Form.Item label="H(高)" name="height">
-            <InputNumber min={0} />
-          </Form.Item>
+            <Form.Item label="限量数量" name="limitedCount">
+              <InputNumber min={1} />
+            </Form.Item>
+          </div>
 
-          <Form.Item label="D(深)" name="depth">
-            <InputNumber min={0} />
-          </Form.Item>
+          <div className="form-row">
+            <Form.Item 
+              label="H(高)" 
+              name="height"
+              rules={[
+                {
+                  validator: (_, value, callback) => {
+                    const depth = form.getFieldValue('depth');
+                    const width = form.getFieldValue('width');
+                    if ((value !== undefined && value !== null) && (depth === undefined || depth === null || width === undefined || width === null)) {
+                      callback('如果填写了高度，必须同时填写深度和宽度');
+                    } else {
+                      callback();
+                    }
+                  }
+                }
+              ]}
+            >
+              <InputNumber min={0} />
+            </Form.Item>
 
-          <Form.Item label="W(宽)" name="width">
-            <InputNumber min={0} />
-          </Form.Item>
+            <Form.Item 
+              label="D(深)" 
+              name="depth"
+              rules={[
+                {
+                  validator: (_, value, callback) => {
+                    const height = form.getFieldValue('height');
+                    const width = form.getFieldValue('width');
+                    if ((value !== undefined && value !== null) && (height === undefined || height === null || width === undefined || width === null)) {
+                      callback('如果填写了深度，必须同时填写高度和宽度');
+                    } else {
+                      callback();
+                    }
+                  }
+                }
+              ]}
+            >
+              <InputNumber min={0} />
+            </Form.Item>
+          </div>
 
-          <Form.Item label="限量数量" name="limitedCount">
-            <InputNumber min={1} />
-          </Form.Item>
+          <div className="form-row">
+            <Form.Item 
+              label="W(宽)" 
+              name="width"
+              rules={[
+                {
+                  validator: (_, value, callback) => {
+                    const height = form.getFieldValue('height');
+                    const depth = form.getFieldValue('depth');
+                    if ((value !== undefined && value !== null) && (height === undefined || height === null || depth === undefined || depth === null)) {
+                      callback('如果填写了宽度，必须同时填写高度和深度');
+                    } else {
+                      callback();
+                    }
+                  }
+                }
+              ]}
+            >
+              <InputNumber min={0} />
+            </Form.Item>
 
-          <Form.Item
-            label="预期出货时间"
-            name="estimatedTime"
-            rules={[
-              {
-                pattern: /^\d{4} Q[1-4]$/,
-                message: '格式应为4位年份+Q+空格+1-4，例如：2026 Q3'
-              }
-            ]}
-          >
-            <Input placeholder="例如：2026 Q3" />
-          </Form.Item>
+            <Form.Item
+              label="预期出货时间"
+              name="estimatedTime"
+              rules={[
+                {
+                  pattern: /^\d{4} Q[1-4]$/,
+                  message: '格式应为4位年份+Q+空格+1-4，例如：2026 Q3'
+                }
+              ]}
+            >
+              <Input placeholder="例如：2026 Q3" />
+            </Form.Item>
+          </div>
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
