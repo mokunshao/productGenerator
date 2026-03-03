@@ -60,7 +60,7 @@ function App() {
     content += `<strong>Est. Completion:</strong> ${values.estimatedTime || '--'}<br>`;
     // 检查H、D、W是否都有值
     if (values.height !== undefined && values.height !== null && values.depth !== undefined && values.depth !== null && values.width !== undefined && values.width !== null) {
-      content += `<strong>Size:</strong> (H) ${values.height}cm x (D) ${values.depth}cm x (W) ${values.width}cm<br>`;
+      content += `<strong>Size:</strong> (H) ${values.height} cm x (D) ${values.depth} cm x (W) ${values.width} cm<br>`;
     } else {
       content += `<strong>Size:</strong> --<br>`;
     }
