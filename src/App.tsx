@@ -23,8 +23,8 @@ function App() {
   const [generatedContent, setGeneratedContent] = useState<string>('');
 
   // 处理Input组件的空格逻辑
-  const handleInputChange = (value: string) => {
-    if (!value) return value;
+  const handleInputChange = (value: string | undefined | null) => {
+    if (!value) return '';
     // 去除开头和结尾的空格、制表符、换行符
     let processedValue = value.trim();
     // 将多个连续空格改为1个空格
@@ -42,9 +42,9 @@ function App() {
   // 组装标题
   const generateTitle = (values: FormValues) => {
     let title = '(Shipping Included)';
-    title += values.studioName + ' - ';
-    title += values.ipName + ' - ';
-    title += values.productName + ' ';
+    title += handleInputChange(values.studioName) + ' - ';
+    title += handleInputChange(values.ipName) + ' - ';
+    title += handleInputChange(values.productName) + ' ';
     if (values.scale) {
       title += `1/${values.scale} `;
     }
@@ -73,13 +73,13 @@ function App() {
     }
 
     const fields = [
-      { name: 'Studio', value: values.studioName || '--' },
-      { name: 'Product Name', value: values.productName || '--' },
-      { name: 'Est. Completion', value: values.estimatedTime || '--' },
+      { name: 'Studio', value: handleInputChange(values.studioName) || '--' },
+      { name: 'Product Name', value: handleInputChange(values.productName) || '--' },
+      { name: 'Est. Completion', value: handleInputChange(values.estimatedTime) || '--' },
       { name: 'Size', value: sizeValue },
       { name: 'Limited No Of Unit', value: values.limitedCount || '--' },
-      { name: 'Product IP', value: values.ipName || '--' },
-      { name: 'Product Role', value: values.roleName || '--' },
+      { name: 'Product IP', value: handleInputChange(values.ipName) || '--' },
+      { name: 'Product Role', value: handleInputChange(values.roleName) || '--' },
       { name: 'Product Scale', value: values.scale ? `1/${values.scale}` : '--' },
       { name: 'Product Material', value: 'Imported resin and PU' },
       { name: 'Special Description', value: '--' }
