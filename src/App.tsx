@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { Form, Input, InputNumber, Button, message, Typography } from 'antd';
+import { useState, useEffect } from 'react';
+import { Form, Input, InputNumber, Button, message, Typography, Alert, Input as AntInput, Tooltip } from 'antd';
+
+const { TextArea } = AntInput;
 import './App.css';
 
 const { Text } = Typography;
@@ -7,20 +9,44 @@ const { Text } = Typography;
 interface FormValues {
   studioName: string;
   ipName: string;
-  roleName: string;
+  roleName?: string;
   productName: string;
-  scale: number;
-  height: number;
-  depth: number;
-  width: number;
-  limitedCount: number;
-  estimatedTime: string;
+  scale?: number;
+  height?: number;
+  depth?: number;
+  width?: number;
+  limitedCount?: number;
+  estimatedTime?: string;
 }
 
 function App() {
+  // 计算当前季度的下一个季度
+  const getNextQuarter = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const currentQuarter = Math.floor(month / 3) + 1;
+    let nextQuarter = currentQuarter + 1;
+    let nextYear = year;
+    if (nextQuarter > 4) {
+      nextQuarter = 1;
+      nextYear += 1;
+    }
+    return `${nextYear} Q${nextQuarter}`;
+  };
+
   const [form] = Form.useForm<FormValues>();
+
+  // 设置表单初始值
+  useEffect(() => {
+    form.setFieldsValue({
+      estimatedTime: getNextQuarter()
+    });
+  }, [form]);
   const [generatedTitle, setGeneratedTitle] = useState<string>('');
   const [generatedContent, setGeneratedContent] = useState<string>('');
+  const [showRoleWarning, setShowRoleWarning] = useState<boolean>(false);
+  const [jsonInput, setJsonInput] = useState<string>('');
 
   // 处理Input组件的空格逻辑
   const handleInputChange = (value: string | undefined | null) => {
@@ -32,11 +58,56 @@ function App() {
     return processedValue;
   };
 
-  // 角色名称变化时自动赋值到商品名称
-  const handleRoleNameChange = (value: string) => {
-    const processedValue = handleInputChange(value);
-    form.setFieldsValue({ productName: processedValue });
-    return processedValue;
+  // 点击按钮后将角色名称赋值到商品名称
+  const syncRoleToProduct = () => {
+    const roleName = form.getFieldValue('roleName');
+    if (roleName) {
+      const processedValue = handleInputChange(roleName);
+      form.setFieldsValue({ productName: processedValue });
+    }
+  };
+
+  // 从JSON导入数据
+  const importFromJson = () => {
+    if (!jsonInput.trim()) {
+      message.error('请输入JSON数据');
+      return;
+    }
+
+    try {
+      // 尝试解析JSON
+      let data = JSON.parse(jsonInput);
+
+      // 检查数据结构是否正确
+      if (typeof data === 'object' && data !== null) {
+        // 打印数据，用于调试
+        console.log('导入的JSON数据:', data);
+
+        // 回填到表单
+        form.setFieldsValue({
+          studioName: data.studioName || '',
+          ipName: data.ipName || '',
+          roleName: data.roleName || '',
+          productName: data.productName || '',
+          scale: data.scale || undefined,
+          height: data.height || undefined,
+          depth: data.depth || undefined,
+          width: data.width || undefined,
+          limitedCount: data.limitedCount || undefined,
+          estimatedTime: data.estimatedTime || undefined
+        });
+
+        // 生成标题和详情
+        handleSubmit(data as FormValues);
+
+        message.success('从JSON导入成功');
+      } else {
+        message.error('JSON数据格式不正确');
+      }
+    } catch (error) {
+      message.error('JSON解析失败，请检查输入格式');
+      console.error('JSON解析错误:', error);
+    }
   };
 
   // 组装标题
@@ -109,6 +180,13 @@ function App() {
 
   // 表单提交
   const handleSubmit = (values: FormValues) => {
+    // 检查是否有角色名称
+    if (!values.roleName || values.roleName.trim() === '') {
+      setShowRoleWarning(true);
+    } else {
+      setShowRoleWarning(false);
+    }
+
     const title = generateTitle(values);
     const content = generateContent(values);
     setGeneratedTitle(title);
@@ -117,8 +195,6 @@ function App() {
 
   return (
     <div className="app">
-      <h3>商品信息生成器</h3>
-
       <div className="container">
         <Form
           form={form}
@@ -132,7 +208,7 @@ function App() {
               name="studioName"
               rules={[{ required: true, message: '请输入工作室名称' }]}
             >
-              <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
+              <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} autoComplete="off" />
             </Form.Item>
 
             <Form.Item
@@ -140,25 +216,30 @@ function App() {
               name="ipName"
               rules={[{ required: true, message: '请输入IP名称' }]}
             >
-              <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
+              <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} autoComplete="off" />
             </Form.Item>
           </div>
 
-          <div className="form-row">
-            <Form.Item
-              label="角色名称"
-              name="roleName"
-              rules={[{ required: true, message: '请输入角色名称' }]}
-            >
-              <Input onChange={(e) => e.target.value = handleRoleNameChange(e.target.value)} />
-            </Form.Item>
-
+          <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-end' }}>
+            <div className="form-row">
+              <Form.Item
+                label="角色名称"
+                name="roleName"
+              >
+                <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} autoComplete="off" style={{ flex: 1 }} />
+              </Form.Item>
+            </div>
+            <Tooltip title="将角色名称同步到商品名称">
+              <Button type="link" onClick={syncRoleToProduct} size="small" style={{ marginBottom: '8px' }}>
+                →
+              </Button>
+            </Tooltip>
             <Form.Item
               label="商品名称"
               name="productName"
               rules={[{ required: true, message: '请输入商品名称' }]}
             >
-              <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} />
+              <Input onChange={(e) => e.target.value = handleInputChange(e.target.value)} autoComplete="off" />
             </Form.Item>
           </div>
 
@@ -206,7 +287,7 @@ function App() {
                 }
               ]}
             >
-              <Input placeholder="例如：2026 Q3" />
+              <Input placeholder="例如：2026 Q3" autoComplete="off" />
             </Form.Item>
           </div>
 
@@ -215,6 +296,16 @@ function App() {
               生成
             </Button>
           </Form.Item>
+
+          {showRoleWarning && (
+            <Alert
+              message="警告"
+              description="角色名称为空，请考虑填写角色名称以获得更完整的商品信息"
+              type="warning"
+              showIcon
+              style={{ marginBottom: '1rem', marginTop: '1rem' }}
+            />
+          )}
         </Form>
 
         <div className="result">
@@ -237,6 +328,23 @@ function App() {
               <p>填写表单并点击生成按钮查看结果</p>
             </div>
           )}
+
+          {/* JSON输入部分 */}
+          <div style={{ marginTop: '2rem' }}>
+            <h3>从JSON导入</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <TextArea
+                value={jsonInput}
+                onChange={(e) => setJsonInput(e.target.value)}
+                placeholder="请输入JSON数据或JavaScript对象"
+                rows={12}
+                autoComplete="off"
+              />
+              <Button type="default" onClick={importFromJson}>
+                从JSON导入
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
