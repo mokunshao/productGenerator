@@ -1,0 +1,42 @@
+name: Deploy to GitHub Pages
+
+on:
+  # 当推送到 main 分支时触发
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    # 使用最新的 Ubuntu 环境
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 检出代码
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 2. 设置 Node.js 环境
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20' # 使用适合项目的 Node 版本
+          cache: 'npm' # 缓存 npm 依赖- name: Set up Node.js
+  uses: actions/setup-node@v3
+  with:
+    node-version: '20' # 升级到 Node.js 20
+    cache: 'npm'
+
+      # 3. 安装依赖
+      - name: Install dependencies
+        run: npm install
+
+      # 4. 构建项目
+      - name: Build project
+        run: npm run build
+
+      # 5. 部署到 GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} # 自动生成的 token
+          publish_dir: ./dist # 构建产物目录
