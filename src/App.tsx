@@ -54,23 +54,44 @@ function App() {
 
   // 组装详情内容
   const generateContent = (values: FormValues) => {
-    let content = '';
-    content += `<strong>Studio:</strong> ${values.studioName || '--'}<br>`;
-    content += `<strong>Product Name:</strong> ${values.productName || '--'}<br>`;
-    content += `<strong>Est. Completion:</strong> ${values.estimatedTime || '--'}<br>`;
-    // 检查H、D、W是否都有值
-    if (values.height !== undefined && values.height !== null && values.depth !== undefined && values.depth !== null && values.width !== undefined && values.width !== null) {
-      content += `<strong>Size:</strong> (H) ${values.height} cm x (D) ${values.depth} cm x (W) ${values.width} cm<br>`;
-    } else {
-      content += `<strong>Size:</strong> --<br>`;
+    // 生成Size字段
+    let sizeValue = '';
+    const sizeParts = [];
+    if (values.height !== undefined && values.height !== null) {
+      sizeParts.push(`(H) ${values.height} cm`);
     }
-    content += `<strong>Limited No Of Unit:</strong> ${values.limitedCount || '--'}<br>`;
-    content += `<strong>Product IP:</strong> ${values.ipName || '--'}<br>`;
-    content += `<strong>Product Role:</strong> ${values.roleName || '--'}<br>`;
-    content += `<strong>Product Scale:</strong> ${values.scale ? `1/${values.scale}` : '--'}<br>`;
-    content += `<strong>Product Material:</strong> Imported resin and PU<br>`;
-    content += `<strong>Special Description:</strong> --`;
-    return content;
+    if (values.depth !== undefined && values.depth !== null) {
+      sizeParts.push(`(D) ${values.depth} cm`);
+    }
+    if (values.width !== undefined && values.width !== null) {
+      sizeParts.push(`(W) ${values.width} cm`);
+    }
+    if (sizeParts.length > 0) {
+      sizeValue = sizeParts.join(' x ');
+    } else {
+      sizeValue = '--';
+    }
+
+    const fields = [
+      { name: 'Studio', value: values.studioName || '--' },
+      { name: 'Product Name', value: values.productName || '--' },
+      { name: 'Est. Completion', value: values.estimatedTime || '--' },
+      { name: 'Size', value: sizeValue },
+      { name: 'Limited No Of Unit', value: values.limitedCount || '--' },
+      { name: 'Product IP', value: values.ipName || '--' },
+      { name: 'Product Role', value: values.roleName || '--' },
+      { name: 'Product Scale', value: values.scale ? `1/${values.scale}` : '--' },
+      { name: 'Product Material', value: 'Imported resin and PU' },
+      { name: 'Special Description', value: '--' }
+    ];
+
+    let html = '';
+    fields.forEach(field => {
+      if (field.value) {
+        html += `<div><strong>${field.name}:</strong> ${field.value}</div>`;
+      }
+    });
+    return html;
   };
 
   // 复制到剪贴板
@@ -143,11 +164,11 @@ function App() {
 
           <div className="form-row">
             <Form.Item label="一比几" name="scale">
-              <InputNumber min={1} />
+              <InputNumber min={1} controls={false} />
             </Form.Item>
 
             <Form.Item label="限量数量" name="limitedCount">
-              <InputNumber min={1} />
+              <InputNumber min={1} controls={false} />
             </Form.Item>
           </div>
 
@@ -155,41 +176,15 @@ function App() {
             <Form.Item
               label="H(高)"
               name="height"
-              rules={[
-                {
-                  validator: (_, value, callback) => {
-                    const depth = form.getFieldValue('depth');
-                    const width = form.getFieldValue('width');
-                    if ((value !== undefined && value !== null) && (depth === undefined || depth === null || width === undefined || width === null)) {
-                      callback('如果填写了高度，必须同时填写深度和宽度');
-                    } else {
-                      callback();
-                    }
-                  }
-                }
-              ]}
             >
-              <InputNumber min={0} />
+              <InputNumber min={0} controls={false} />
             </Form.Item>
 
             <Form.Item
-              label="D(深)"
+              label="D(深/长)"
               name="depth"
-              rules={[
-                {
-                  validator: (_, value, callback) => {
-                    const height = form.getFieldValue('height');
-                    const width = form.getFieldValue('width');
-                    if ((value !== undefined && value !== null) && (height === undefined || height === null || width === undefined || width === null)) {
-                      callback('如果填写了深度，必须同时填写高度和宽度');
-                    } else {
-                      callback();
-                    }
-                  }
-                }
-              ]}
             >
-              <InputNumber min={0} />
+              <InputNumber min={0} controls={false} />
             </Form.Item>
           </div>
 
@@ -197,21 +192,8 @@ function App() {
             <Form.Item
               label="W(宽)"
               name="width"
-              rules={[
-                {
-                  validator: (_, value, callback) => {
-                    const height = form.getFieldValue('height');
-                    const depth = form.getFieldValue('depth');
-                    if ((value !== undefined && value !== null) && (height === undefined || height === null || depth === undefined || depth === null)) {
-                      callback('如果填写了宽度，必须同时填写高度和深度');
-                    } else {
-                      callback();
-                    }
-                  }
-                }
-              ]}
             >
-              <InputNumber min={0} />
+              <InputNumber min={0} controls={false} />
             </Form.Item>
 
             <Form.Item
