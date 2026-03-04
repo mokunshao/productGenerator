@@ -19,12 +19,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # 使用适合项目的 Node 版本
-          cache: 'npm' # 缓存 npm 依赖- name: Set up Node.js
-  uses: actions/setup-node@v3
-  with:
-    node-version: '20' # 升级到 Node.js 20
-    cache: 'npm'
+          node-version: '20' # 升级到 Node.js 20
+          cache: 'npm' # 缓存 npm 依赖
 
       # 3. 安装依赖
       - name: Install dependencies
