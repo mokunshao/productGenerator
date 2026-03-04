@@ -117,7 +117,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>商品信息生成器</h1>
+      <h3>商品信息生成器</h3>
 
       <div className="container">
         <Form
