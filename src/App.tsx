@@ -76,26 +76,12 @@ function App() {
 
     try {
       // 尝试解析JSON
-      let data = JSON.parse(jsonInput);
+      const data = JSON.parse(jsonInput);
 
       // 检查数据结构是否正确
       if (typeof data === 'object' && data !== null) {
-        // 打印数据，用于调试
-        console.log('导入的JSON数据:', data);
-
         // 回填到表单
-        form.setFieldsValue({
-          studioName: data.studioName || '',
-          ipName: data.ipName || '',
-          roleName: data.roleName || '',
-          productName: data.productName || '',
-          scale: data.scale || undefined,
-          height: data.height || undefined,
-          depth: data.depth || undefined,
-          width: data.width || undefined,
-          limitedCount: data.limitedCount || undefined,
-          estimatedTime: data.estimatedTime || undefined
-        });
+        form.setFieldsValue(data);
 
         // 生成标题和详情
         handleSubmit(data as FormValues);
@@ -106,7 +92,6 @@ function App() {
       }
     } catch (error) {
       message.error('JSON解析失败，请检查输入格式');
-      console.error('JSON解析错误:', error);
     }
   };
 
